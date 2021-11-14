@@ -1,6 +1,8 @@
 import os
 import csv
 import tkinter as tk
+import tkinter.font as font
+from PIL import Image, ImageTk
 from janome.tokenizer import Tokenizer
 
 
@@ -80,11 +82,41 @@ if __name__ == "__main__":
     win = tk.Tk()
     win.title("L-SYS (Kyutech Global Hackathon)")
     win.geometry("800x600")
+    
+
+    ##//  Fonts  //##
+    font_1 = font.Font(family='Helvetica', size=20, weight='bold')
+
+
+    ##//  Menubar  //##
+    menu_bar = tk.Menu(win)
+    win.config(menu=menu_bar)
+    #/ File Menu /#
+    menu_fle = tk.Menu(menu_bar, tearoff=0)
+    menu_fle.add_command(label='Vocabulary', command=lambda:changeFrm(vocab_frm))
+    menu_fle.add_command(label='Grammar', command=lambda:changeFrm(gram_frm))
+    menu_fle.add_command(label='Exit', command=quit)
+    menu_bar.add_cascade(label = 'File', menu = menu_fle)
+    #/ About Menu /#
+    menu_abt = tk.Menu(menu_bar, tearoff=0)
+    menu_bar.add_cascade(label = 'About', menu = menu_abt)
 
 
     ##//  Main Frame  //##
     main_frm = tk.Frame()
     main_frm.grid(row=0, column=0, sticky="nsew")
+    #/ Logo /#
+    main_img_lg = Image.open("../image/logo.png")
+    main_img_w = main_img_lg.width
+    main_img_h = main_img_lg.height
+    main_img_lg = main_img_lg.resize((int(main_img_w * (500/main_img_h)), int(main_img_h * (500/main_img_h))))
+    main_img_lg = ImageTk.PhotoImage(main_img_lg)
+    canvas = tk.Canvas(main_frm, bg="white", width=800, height=500)
+    canvas.pack()
+    canvas.create_image((800 - (main_img_w * (500/main_img_h)))/2, 0, image=main_img_lg, anchor=tk.NW)
+    #main_lbl_title = tk.Label(main_frm, text="L-SYS", font = font_title)
+    #main_lbl_title.pack(expand = True)
+    #/ Button /#
     main_btn_go2vocab = tk.Button(main_frm, text="Vocabulary Learning", command = lambda:changeFrm(vocab_frm))
     main_btn_go2vocab.pack()
     main_btn_go2gram = tk.Button(main_frm, text="Grammar Learning", command = lambda:changeFrm(gram_frm))
@@ -94,6 +126,7 @@ if __name__ == "__main__":
     ##//  Vocabulary Learning Frame  //##
     vocab_frm = tk.Frame()
     vocab_frm.grid(row=0, column=0, sticky="nsew")
+    #/ Button /#
     vocab_btn_back2main = tk.Button(vocab_frm, text="Home", command = lambda:changeFrm(main_frm))
     vocab_btn_back2main.pack()
 
@@ -101,6 +134,7 @@ if __name__ == "__main__":
     ##//  Grammar Learning Frame  //##
     gram_frm = tk.Frame()
     gram_frm.grid(row=0, column=0, sticky="nsew")
+    #/ Button /#
     gram_btn_back2main = tk.Button(gram_frm, text="Home", command = lambda:changeFrm(main_frm))
     gram_btn_back2main.pack()
 

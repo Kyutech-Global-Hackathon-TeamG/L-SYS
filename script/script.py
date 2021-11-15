@@ -2,6 +2,7 @@ import os
 import csv
 import tkinter as tk
 import tkinter.font as font
+import webbrowser as web
 from PIL import Image, ImageTk
 from janome.tokenizer import Tokenizer
 
@@ -72,6 +73,19 @@ def changeFrm(frame):
     return
 
 
+
+###///   Vocabulary Learning Function   ///###
+def vcbExam(parent_frm, lang):
+    return
+
+
+
+###///   Grammar Learning Function   ///###
+def grmExam(parent_frm, lang):
+    return
+
+
+
 ###///   Main Function   ///###
 if __name__ == "__main__":
     ##//  Check Files  //##
@@ -85,7 +99,7 @@ if __name__ == "__main__":
     
 
     ##//  Fonts  //##
-    font_1 = font.Font(family='Helvetica', size=20, weight='bold')
+    font_1 = font.Font(family = 'Helvetica', size = 20, weight = 'bold')
 
 
     ##//  Menubar  //##
@@ -93,13 +107,14 @@ if __name__ == "__main__":
     win.config(menu=menu_bar)
     #/ File Menu /#
     menu_fle = tk.Menu(menu_bar, tearoff=0)
-    menu_fle.add_command(label='Vocabulary', command=lambda:changeFrm(vocab_frm))
-    menu_fle.add_command(label='Grammar', command=lambda:changeFrm(gram_frm))
-    menu_fle.add_command(label='Exit', command=quit)
-    menu_bar.add_cascade(label = 'File', menu = menu_fle)
+    menu_fle.add_command(label = 'Vocabulary', command  =lambda:changeFrm(vcbmn_frm))
+    menu_fle.add_command(label = 'Grammar', command = lambda:changeFrm(grmmn_frm))
+    menu_fle.add_command(label = 'Exit', command = quit)
+    menu_bar.add_cascade(label = 'Learn', menu = menu_fle)
     #/ About Menu /#
     menu_abt = tk.Menu(menu_bar, tearoff=0)
-    menu_bar.add_cascade(label = 'About', menu = menu_abt)
+    menu_abt.add_command(label = 'About Us', command = lambda:web.open("https://github.com/Kyutech-Global-Hackathon-TeamG"))    #Open GitHub Organization Website 
+    menu_bar.add_cascade(label = 'Help', menu = menu_abt)
 
 
     ##//  Main Frame  //##
@@ -111,32 +126,76 @@ if __name__ == "__main__":
     main_img_h = main_img_lg.height
     main_img_lg = main_img_lg.resize((int(main_img_w * (500/main_img_h)), int(main_img_h * (500/main_img_h))))
     main_img_lg = ImageTk.PhotoImage(main_img_lg)
-    canvas = tk.Canvas(main_frm, bg="white", width=800, height=500)
+    canvas = tk.Canvas(main_frm, bg = "white", width = 800, height = 500)
     canvas.pack()
     canvas.create_image((800 - (main_img_w * (500/main_img_h)))/2, 0, image=main_img_lg, anchor=tk.NW)
     #main_lbl_title = tk.Label(main_frm, text="L-SYS", font = font_title)
     #main_lbl_title.pack(expand = True)
     #/ Button /#
-    main_btn_go2vocab = tk.Button(main_frm, text="Vocabulary Learning", command = lambda:changeFrm(vocab_frm))
+    main_btn_go2vocab = tk.Button(main_frm, text = "Vocabulary Learning", command = lambda:changeFrm(vcbmn_frm))
     main_btn_go2vocab.pack()
-    main_btn_go2gram = tk.Button(main_frm, text="Grammar Learning", command = lambda:changeFrm(gram_frm))
+    main_btn_go2gram = tk.Button(main_frm, text = "Grammar Learning", command = lambda:changeFrm(grmmn_frm))
     main_btn_go2gram.pack()
 
 
-    ##//  Vocabulary Learning Frame  //##
-    vocab_frm = tk.Frame()
-    vocab_frm.grid(row=0, column=0, sticky="nsew")
+    ##//  Vocabulary Learning Main Frame  //##
+    vcbmn_frm = tk.Frame()
+    vcbmn_frm.grid(row=0, column=0, sticky="nsew")
     #/ Button /#
-    vocab_btn_back2main = tk.Button(vocab_frm, text="Home", command = lambda:changeFrm(main_frm))
-    vocab_btn_back2main.pack()
+    vcbmn_btn_jp = tk.Button(vcbmn_frm, text = "Japanese", command = lambda:changeFrm(vcbjp_frm))
+    vcbmn_btn_jp.pack()
+    vcbmn_btn_en = tk.Button(vcbmn_frm, text = "English", command = lambda:changeFrm(vcben_frm))
+    vcbmn_btn_en.pack()
+    vcbmn_btn_back2main = tk.Button(vcbmn_frm, text = "Home", command = lambda:changeFrm(main_frm))
+    vcbmn_btn_back2main.pack()
 
 
-    ##//  Grammar Learning Frame  //##
-    gram_frm = tk.Frame()
-    gram_frm.grid(row=0, column=0, sticky="nsew")
+    ##//  Vocabulary Learning for Japanese Frame  //##
+    vcbjp_frm = tk.Frame()
+    vcbjp_frm.grid(row=0, column=0, sticky="nsew")
+    vcbExam(vcbjp_frm, "jp")
     #/ Button /#
-    gram_btn_back2main = tk.Button(gram_frm, text="Home", command = lambda:changeFrm(main_frm))
-    gram_btn_back2main.pack()
+    vcbjp_btn_back2main = tk.Button(vcbjp_frm, text = "Home", command = lambda:changeFrm(main_frm))
+    vcbjp_btn_back2main.pack()
+    
+
+    ##//  Vocabulary Learning for English Frame  //##
+    vcben_frm = tk.Frame()
+    vcben_frm.grid(row=0, column=0, sticky="nsew")
+    vcbExam(vcben_frm, "en")
+    #/ Button /#
+    vcben_btn_back2main = tk.Button(vcben_frm, text = "Home", command = lambda:changeFrm(main_frm))
+    vcben_btn_back2main.pack()
+
+
+    ##//  Grammar Learning Main Frame  //##
+    grmmn_frm = tk.Frame()
+    grmmn_frm.grid(row=0, column=0, sticky="nsew")
+    #/ Button /#
+    grmmn_btn_jp = tk.Button(grmmn_frm, text = "Japanese", command = lambda:changeFrm(grmjp_frm))
+    grmmn_btn_jp.pack()
+    grmmn_btn_en = tk.Button(grmmn_frm, text = "English", command = lambda:changeFrm(grmen_frm))
+    grmmn_btn_en.pack()
+    grmmn_btn_back2main = tk.Button(grmmn_frm, text = "Home", command = lambda:changeFrm(main_frm))
+    grmmn_btn_back2main.pack()
+
+
+    ##//  Grammar Learning for Japanese Frame  //##
+    grmjp_frm = tk.Frame()
+    grmjp_frm.grid(row=0, column=0, sticky="nsew")
+    grmExam(grmjp_frm, "jp")
+    #/ Button /#
+    grmjp_btn_back2main = tk.Button(grmjp_frm, text = "Home", command = lambda:changeFrm(main_frm))
+    grmjp_btn_back2main.pack()
+
+
+    ##//  Grammar Learning for English Frame  //##
+    grmen_frm = tk.Frame()
+    grmen_frm.grid(row=0, column=0, sticky="nsew")
+    grmExam(grmen_frm, "en")
+    #/ Button /#
+    grmen_btn_back2main = tk.Button(grmen_frm, text = "Home", command = lambda:changeFrm(main_frm))
+    grmen_btn_back2main.pack()
 
 
     ##//  Output GUI Window  //##

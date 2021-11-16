@@ -4,7 +4,8 @@ import tkinter as tk
 import tkinter.font as font
 import webbrowser as web
 from PIL import Image, ImageTk
-from janome.tokenizer import Tokenizer
+#import talk2word
+
 
 
 
@@ -74,14 +75,48 @@ def changeFrm(frame):
 
 
 
-###///   Vocabulary Learning Function   ///###
-def vcbExam(parent_frm, lang):
-    return
 
+###///   Vocabulary Learning Function   ///###
+def vcbExam():
+    ##//  Start Frame  //##
+    vcbex_str_frm = tk.Frame()
+    vcbex_str_frm.grid(row=0, column=0, sticky="nsew")
+    #/ Button /#
+    vcbex_str_btn_go2exam = tk.Button(vcbex_str_frm, text = "Start", command = lambda:changeFrm(vcbex_frm_list[0]))
+    vcbex_str_btn_go2exam.pack()
+    vcbex_str_btn_back2main = tk.Button(vcbex_str_frm, text = "Home", command = lambda:changeFrm(main_frm))
+    vcbex_str_btn_back2main.pack()
+
+
+    ##//  Exam Frame  //##
+    vcbex_frm_list = []
+    for i in range(10):
+        vcbex_frm = "vcbex_frm_" + str(i)
+        vcbex_frm = tk.Frame()
+        vcbex_frm.grid(row=0, column=0, sticky="nsew")
+        vcbex_frm_list.append(vcbex_frm)
+        #/ Button /#
+        if i < 9:
+            vcbex_btn_go2next = tk.Button(vcbex_frm_list[i], text = "Next", command = lambda:changeFrm(vcbex_frm_list[i+1]))
+            vcbex_btn_go2next.pack()
+        elif i == 9:
+            vcbex_btn_go2next = tk.Button(vcbex_frm_list[i], text = "Finish", command = lambda:changeFrm(vcbex_end_frm))
+            vcbex_btn_go2next.pack()
+
+
+    ##//  End Frame  //##
+    vcbex_end_frm = tk.Frame()
+    vcbex_end_frm.grid(row=0, column=0, sticky="nsew")
+    #/ Button /#
+    vcbex_end_btn_back2main = tk.Button(vcbex_end_frm, text = "Home", command = lambda:changeFrm(main_frm))
+    vcbex_end_btn_back2main.pack()
+
+    return
+    
 
 
 ###///   Grammar Learning Function   ///###
-def grmExam(parent_frm, lang):
+def grmExam():
     return
 
 
@@ -153,8 +188,9 @@ if __name__ == "__main__":
     ##//  Vocabulary Learning for Japanese Frame  //##
     vcbjp_frm = tk.Frame()
     vcbjp_frm.grid(row=0, column=0, sticky="nsew")
-    vcbExam(vcbjp_frm, "jp")
     #/ Button /#
+    vcbjp_btn_back2exam = tk.Button(vcbjp_frm, text = "Exam", command = lambda:vcbExam())
+    vcbjp_btn_back2exam.pack()
     vcbjp_btn_back2main = tk.Button(vcbjp_frm, text = "Home", command = lambda:changeFrm(main_frm))
     vcbjp_btn_back2main.pack()
     
@@ -162,8 +198,9 @@ if __name__ == "__main__":
     ##//  Vocabulary Learning for English Frame  //##
     vcben_frm = tk.Frame()
     vcben_frm.grid(row=0, column=0, sticky="nsew")
-    vcbExam(vcben_frm, "en")
     #/ Button /#
+    vcben_btn_back2exam = tk.Button(vcben_frm, text = "Exam", command = lambda:vcbExam())
+    vcben_btn_back2exam.pack()
     vcben_btn_back2main = tk.Button(vcben_frm, text = "Home", command = lambda:changeFrm(main_frm))
     vcben_btn_back2main.pack()
 
@@ -183,8 +220,9 @@ if __name__ == "__main__":
     ##//  Grammar Learning for Japanese Frame  //##
     grmjp_frm = tk.Frame()
     grmjp_frm.grid(row=0, column=0, sticky="nsew")
-    grmExam(grmjp_frm, "jp")
     #/ Button /#
+    grmjp_btn_back2exam = tk.Button(grmjp_frm, text = "Exam", command = lambda:grmExam())
+    grmjp_btn_back2exam.pack()
     grmjp_btn_back2main = tk.Button(grmjp_frm, text = "Home", command = lambda:changeFrm(main_frm))
     grmjp_btn_back2main.pack()
 
@@ -192,8 +230,9 @@ if __name__ == "__main__":
     ##//  Grammar Learning for English Frame  //##
     grmen_frm = tk.Frame()
     grmen_frm.grid(row=0, column=0, sticky="nsew")
-    grmExam(grmen_frm, "en")
     #/ Button /#
+    grmen_btn_back2exam = tk.Button(grmen_frm, text = "Exam", command = lambda:grmExam())
+    grmen_btn_back2exam.pack()
     grmen_btn_back2main = tk.Button(grmen_frm, text = "Home", command = lambda:changeFrm(main_frm))
     grmen_btn_back2main.pack()
 

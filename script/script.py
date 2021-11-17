@@ -131,7 +131,7 @@ def vcbExam(lng, q_n, a_n):
         s = ""
     vcbex_qst_lbl_quest = tk.Label(vcbex_qst_frm, text=  str(q_n) + " Question"+ s +" Left", font = font_1)
     vcbex_qst_lbl_quest.place(x=100, y=50)
-    vcbex_qst_lbl_score = tk.Label(vcbex_qst_frm, text= "Score Result: " + str(a_n), font = font_1)
+    vcbex_qst_lbl_score = tk.Label(vcbex_qst_frm, text= "Score Result: " + str(a_n) + "/10", font = font_1)
     vcbex_qst_lbl_score.place(x=100, y=300)
     #/ Checkbutton /#
     bln = []
@@ -157,7 +157,7 @@ def vcbExam(lng, q_n, a_n):
         #/ Label /#
         vcbex_scr_lbl_title = tk.Label(vcbex_scr_frm, text= "Vocabulary Learning(" + lng + ")", font = font_1)
         vcbex_scr_lbl_title.pack(expand = True)
-        vcbex_scr_lbl_score = tk.Label(vcbex_scr_frm, text= "Score Result: " + str(a_n), font = font_1)
+        vcbex_scr_lbl_score = tk.Label(vcbex_scr_frm, text= "Score Result: " + str(a_n) + "/10", font = font_1)
         vcbex_scr_lbl_score.pack(expand = True)
         #/ Button /#
         vcbex_scr_btn_back2main = tk.Button(vcbex_scr_frm, text = "Finish", command = lambda:changeFrm(main_frm, a_n))
@@ -181,7 +181,7 @@ def grmExam(lng, q_n, a_n):
         s = ""
     grmex_qst_lbl_quest = tk.Label(grmex_qst_frm, text=  str(q_n) + " Question"+ s +" Left", font = font_1)
     grmex_qst_lbl_quest.place(x=100, y=50)
-    grmex_qst_lbl_score = tk.Label(grmex_qst_frm, text= "Score Result: " + str(a_n), font = font_1)
+    grmex_qst_lbl_score = tk.Label(grmex_qst_frm, text= "Score Result: " + str(a_n) + "/10", font = font_1)
     grmex_qst_lbl_score.place(x=100, y=300)
     #/ Checkbutton /#
     bln = []
@@ -206,7 +206,7 @@ def grmExam(lng, q_n, a_n):
         #/ Label /#
         grmex_scr_lbl_title = tk.Label(grmex_scr_frm, text= "Grammer Learning(" + lng + ")", font = font_1)
         grmex_scr_lbl_title.pack(expand = True)
-        grmex_scr_lbl_score = tk.Label(grmex_scr_frm, text= "Score Result: " + str(a_n), font = font_1)
+        grmex_scr_lbl_score = tk.Label(grmex_scr_frm, text= "Score Result: " + str(a_n) + "/10", font = font_1)
         grmex_scr_lbl_score.pack(expand = True)
         #/ Button /#
         grmex_scr_btn_back2main = tk.Button(grmex_scr_frm, text = "Finish", command = lambda:changeFrm(main_frm, a_n))

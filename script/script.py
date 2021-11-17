@@ -7,6 +7,7 @@ import webbrowser as web
 import random
 import chardet
 from PIL import Image, ImageTk
+from talk2word import T2W
 from talk2word import T2P
 
 
@@ -37,8 +38,8 @@ def editPath(file_path):
 
 ###///   Generate Wordbook Files Function   ///###
 def genWordbook():
-    #T2W.talk2word(csv_dict['talk'][0], csv_dict['wordbook_j2e'][0])
-    #T2W.talk2word(csv_dict['talk'][0], csv_dict['wordbook_e2j'][0])
+    T2W.talk2word_j2e(csv_dict['talk'][0], csv_dict['wordbook_j2e'][0])
+    T2W.talk2word_e2j(csv_dict['talk'][0], csv_dict['wordbook_e2j'][0])
     return
 
 
@@ -131,6 +132,14 @@ def vcbExam(lng, q_n, a_n):
         s = ""
     vcbex_qst_lbl_quest = tk.Label(vcbex_qst_frm, text=  str(q_n) + " Question"+ s +" Left", font = font_1)
     vcbex_qst_lbl_quest.place(x=100, y=50)
+    if lng == 'jp':
+        wb_lst= csv_dict['wordbook_j2e'][2]
+        w_n = random.randint(0, len(wb_lst)-1)
+    else:
+        wb_lst= csv_dict['wordbook_e2j'][2]
+        w_n = random.randint(0, len(wb_lst)-1)
+    vcbex_qst_lbl_quest = tk.Label(vcbex_qst_frm, text=  "What dose " + wb_lst[w_n][0] + " mean?", font = font_1)
+    vcbex_qst_lbl_quest.place(x=100, y=100)
     vcbex_qst_lbl_score = tk.Label(vcbex_qst_frm, text= "Score Result: " + str(a_n) + "/10", font = font_1)
     vcbex_qst_lbl_score.place(x=100, y=300)
     #/ Checkbutton /#
@@ -140,10 +149,11 @@ def vcbExam(lng, q_n, a_n):
         bln.append(tk.BooleanVar())
         bln[-1].set(False)
         if i == c_n:
-            chk = tk.Checkbutton(vcbex_qst_frm, variable=bln[-1], text='Correct', command = lambda:checkAns("vcb", lng, vcbex_qst_frm, q_n, a_n, 1))
+            chk = tk.Checkbutton(vcbex_qst_frm, variable=bln[-1], text=wb_lst[w_n][1], command = lambda:checkAns("vcb", lng, vcbex_qst_frm, q_n, a_n, 1))
             chk.place(x=100, y=150 + i * 20)
         elif i != c_n:
-            chk = tk.Checkbutton(vcbex_qst_frm, variable=bln[-1], text='Incorrect', command = lambda:checkAns("vcb", lng, vcbex_qst_frm, q_n, a_n, 0))
+            r_n = random.randint(0, len(wb_lst)-1)
+            chk = tk.Checkbutton(vcbex_qst_frm, variable=bln[-1], text=wb_lst[r_n][1], command = lambda:checkAns("vcb", lng, vcbex_qst_frm, q_n, a_n, 0))
             chk.place(x=100, y=150 + i * 20)
     #/ Button /#
     vcbex_qst_btn_back2main = tk.Button(vcbex_qst_frm, text = "Cancel", command = lambda:changeFrm(main_frm, a_n))
@@ -223,7 +233,7 @@ if __name__ == "__main__":
     ##///               /##
     ##//  Input Files  //##
     ##/               ///##
-    checkFiles()
+    #checkFiles()
     readFiles()
 
 

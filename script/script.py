@@ -101,7 +101,7 @@ def changeFrm(frame, a_n):
 ###///   Update GUI Frame Function   ///###
 def updateFrm(lrn, lng, frame, q_n, a_n):
     frame.destroy()
-    q_n += -1
+    q_n -= 1
     if lrn == "vcb":
         vcbExam(lng, q_n, a_n)
     elif lrn == "grm":
@@ -109,40 +109,56 @@ def updateFrm(lrn, lng, frame, q_n, a_n):
     return
 
 
+###///   Check Answer Function   ///###
+def checkAns(lrn, lng, frm, q_n, a_n, pf_n):
+    if pf_n == 1:
+        a_n += 1
+    updateFrm(lrn, lng, frm, q_n, a_n)
+    return
+
+
 ###///   Vocabulary Learning Function   ///###
 def vcbExam(lng, q_n, a_n):
     ##//  Question Frame  //##
-    #global vcbex_qst_frm
     vcbex_qst_frm = tk.Frame()
     vcbex_qst_frm.grid(row=0, column=0, sticky="nsew")
     #/ Label /#
-    vcbex_qst_lbl_title = tk.Label(vcbex_qst_frm, text = lng + " Vocabulary Learning " + str(a_n), font = font_1)
-    vcbex_qst_lbl_title.pack(expand = True)
+    vcbex_qst_lbl_title = tk.Label(vcbex_qst_frm, text= "Vocabulary Learning(" + lng + ")", font = font_1)
+    vcbex_qst_lbl_title.place(x=230, y=10)
+    if q_n != 1:
+        s = "s"
+    else:
+        s = ""
+    vcbex_qst_lbl_quest = tk.Label(vcbex_qst_frm, text=  str(q_n) + " Question"+ s +" Left", font = font_1)
+    vcbex_qst_lbl_quest.place(x=100, y=50)
+    vcbex_qst_lbl_score = tk.Label(vcbex_qst_frm, text= "Score Result: " + str(a_n), font = font_1)
+    vcbex_qst_lbl_score.place(x=100, y=300)
     #/ Checkbutton /#
     bln = []
     c_n = random.randint(0, 3)
     for i in range(4):
-        b = tk.BooleanVar()
-        bln.append(b)
+        bln.append(tk.BooleanVar())
+        bln[-1].set(False)
         if i == c_n:
-            chk = tk.Checkbutton(vcbex_qst_frm, variable=b, text='正解')
-            chk.place(x=50, y=70 + i * 20)
+            chk = tk.Checkbutton(vcbex_qst_frm, variable=bln[-1], text='Correct', command = lambda:checkAns("vcb", lng, vcbex_qst_frm, q_n, a_n, 1))
+            chk.place(x=100, y=150 + i * 20)
         elif i != c_n:
-            chk = tk.Checkbutton(vcbex_qst_frm, variable=b, text='間違い')
-            chk.place(x=50, y=70 + i * 20)
-    if bln[c_n].get == True:
-        a_n += 1
+            chk = tk.Checkbutton(vcbex_qst_frm, variable=bln[-1], text='Incorrect', command = lambda:checkAns("vcb", lng, vcbex_qst_frm, q_n, a_n, 0))
+            chk.place(x=100, y=150 + i * 20)
     #/ Button /#
-    vcbex_qst_btn_go2exam = tk.Button(vcbex_qst_frm, text = "Next", command = lambda:updateFrm("vcb", lng, vcbex_qst_frm, q_n, a_n))
-    vcbex_qst_btn_go2exam.pack()
     vcbex_qst_btn_back2main = tk.Button(vcbex_qst_frm, text = "Cancel", command = lambda:changeFrm(main_frm, a_n))
-    vcbex_qst_btn_back2main.pack()
+    vcbex_qst_btn_back2main.place(x=350, y=400)
 
 
     ##//  Score Frame  //##
     if q_n == 0:
         vcbex_scr_frm = tk.Frame()
         vcbex_scr_frm.grid(row=0, column=0, sticky="nsew")
+        #/ Label /#
+        vcbex_scr_lbl_title = tk.Label(vcbex_scr_frm, text= "Vocabulary Learning(" + lng + ")", font = font_1)
+        vcbex_scr_lbl_title.pack(expand = True)
+        vcbex_scr_lbl_score = tk.Label(vcbex_scr_frm, text= "Score Result: " + str(a_n), font = font_1)
+        vcbex_scr_lbl_score.pack(expand = True)
         #/ Button /#
         vcbex_scr_btn_back2main = tk.Button(vcbex_scr_frm, text = "Finish", command = lambda:changeFrm(main_frm, a_n))
         vcbex_scr_btn_back2main.pack()
@@ -154,26 +170,47 @@ def vcbExam(lng, q_n, a_n):
 ###///   Grammar Learning Function   ///###
 def grmExam(lng, q_n, a_n):
     ##//  Question Frame  //##
-    #global vcbex_qst_frm
-    vcbex_qst_frm = tk.Frame()
-    vcbex_qst_frm.grid(row=0, column=0, sticky="nsew")
+    grmex_qst_frm = tk.Frame()
+    grmex_qst_frm.grid(row=0, column=0, sticky="nsew")
     #/ Label /#
-    vcbex_qst_lbl_title = tk.Label(vcbex_qst_frm, text= lng + " Grammer Learning " + str(q_n), font = font_1)
-    vcbex_qst_lbl_title.pack(expand = True)
+    grmex_qst_lbl_title = tk.Label(grmex_qst_frm, text= "Grammer Learning(" + lng + ")", font = font_1)
+    grmex_qst_lbl_title.place(x=230, y=10)
+    if q_n != 1:
+        s = "s"
+    else:
+        s = ""
+    grmex_qst_lbl_quest = tk.Label(grmex_qst_frm, text=  str(q_n) + " Question"+ s +" Left", font = font_1)
+    grmex_qst_lbl_quest.place(x=100, y=50)
+    grmex_qst_lbl_score = tk.Label(grmex_qst_frm, text= "Score Result: " + str(a_n), font = font_1)
+    grmex_qst_lbl_score.place(x=100, y=300)
+    #/ Checkbutton /#
+    bln = []
+    c_n = random.randint(0, 3)
+    for i in range(4):
+        bln.append(tk.BooleanVar())
+        bln[-1].set(False)
+        if i == c_n:
+            chk = tk.Checkbutton(grmex_qst_frm, variable=bln[-1], text='Correct', command = lambda:checkAns("grm", lng, grmex_qst_frm, q_n, a_n, 1))
+            chk.place(x=100, y=150 + i * 20)
+        elif i != c_n:
+            chk = tk.Checkbutton(grmex_qst_frm, variable=bln[-1], text='Incorrect', command = lambda:checkAns("grm", lng, grmex_qst_frm, q_n, a_n, 0))
+            chk.place(x=100, y=150 + i * 20)
     #/ Button /#
-    vcbex_qst_btn_go2exam = tk.Button(vcbex_qst_frm, text = "Next", command = lambda:updateFrm("grm", lng, vcbex_qst_frm, q_n, a_n))
-    vcbex_qst_btn_go2exam.pack()
-    vcbex_qst_btn_back2main = tk.Button(vcbex_qst_frm, text = "Cancel", command = lambda:changeFrm(main_frm, a_n))
-    vcbex_qst_btn_back2main.pack()
-
+    grmex_qst_btn_back2main = tk.Button(grmex_qst_frm, text = "Cancel", command = lambda:changeFrm(main_frm, a_n))
+    grmex_qst_btn_back2main.place(x=350, y=400)
 
     ##//  Score Frame  //##
-    if num == 0:
-        vcbex_scr_frm = tk.Frame()
-        vcbex_scr_frm.grid(row=0, column=0, sticky="nsew")
+    if q_n == 0:
+        grmex_scr_frm = tk.Frame()
+        grmex_scr_frm.grid(row=0, column=0, sticky="nsew")
+        #/ Label /#
+        grmex_scr_lbl_title = tk.Label(grmex_scr_frm, text= "Grammer Learning(" + lng + ")", font = font_1)
+        grmex_scr_lbl_title.pack(expand = True)
+        grmex_scr_lbl_score = tk.Label(grmex_scr_frm, text= "Score Result: " + str(a_n), font = font_1)
+        grmex_scr_lbl_score.pack(expand = True)
         #/ Button /#
-        vcbex_scr_btn_back2main = tk.Button(vcbex_scr_frm, text = "Finish", command = lambda:changeFrm(main_frm, a_n))
-        vcbex_scr_btn_back2main.pack()
+        grmex_scr_btn_back2main = tk.Button(grmex_scr_frm, text = "Finish", command = lambda:changeFrm(main_frm, a_n))
+        grmex_scr_btn_back2main.pack()
 
     return
 

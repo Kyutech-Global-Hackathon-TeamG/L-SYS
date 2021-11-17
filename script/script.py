@@ -1,10 +1,13 @@
+# -*- coding: utf-8 -*-
 import os
 import csv
 import tkinter as tk
 import tkinter.font as font
 import webbrowser as web
+import random
+import chardet
 from PIL import Image, ImageTk
-#import talk2word
+from talk2word import T2P
 
 
 ###////                //###
@@ -12,8 +15,10 @@ from PIL import Image, ImageTk
 ###//                ////###
 
 q_num = 10
+a_num = 0
 csv_dict ={'talk':['../csv/talk.csv', 0],
-           'wordbook':['../csv/wordbook.csv', 0],
+           'wordbook_j2e':['../csv/wordbook_j2e.csv', 0],
+           'wordbook_e2j':['../csv/wordbook_e2j.csv', 0],
            'phrasebook':['../csv/phrasebook.csv', 0]}
 
 
@@ -24,7 +29,7 @@ csv_dict ={'talk':['../csv/talk.csv', 0],
 
 ###///   Edit File Path Function   ///###
 def editPath(file_path):
-    path = os.path.join(os.path.dirname(__file__), '../' + file_path)
+    path = os.path.join(os.path.dirname(__file__), file_path)
     path = os.path.normpath(path)
     return path
 
@@ -32,26 +37,15 @@ def editPath(file_path):
 
 ###///   Generate Wordbook Files Function   ///###
 def genWordbook():
-    ##//  Road File  //##
-    #with open(editPath(csv_dict['talk'][0])) as f:
-    #    reader = csv.reader(f) # Read CSV
-    #    header = next(reader)
-    ##//  Morphological Analysis  //##
-    ##//  Translate  //##
-    ##//  Generate File  //##    
+    #T2W.talk2word(csv_dict['talk'][0], csv_dict['wordbook_j2e'][0])
+    #T2W.talk2word(csv_dict['talk'][0], csv_dict['wordbook_e2j'][0])
     return
 
 
 
 ###///   Generate Phrasebook Files Function   ///###
 def genPhrasebook():
-    ##//  Road File  //##
-    #with open(editPath(csv_dict['talk'][0])) as f:
-    #    reader = csv.reader(f) # Read CSV
-    #    header = next(reader)
-    ##//  Morphological Analysis  //##
-    ##//  Translate  //##
-    ##//  Generate File  //##
+    T2P.talk2phrase(csv_dict['talk'][0], csv_dict['phrasebook'][0])
     return
 
 
@@ -73,47 +67,84 @@ def checkFiles():
     return
 
 
+###///   Read Files Function   ///###
+def readFiles():
+    ##//  Read Files  //##
+    csv_keys = csv_dict.keys()
+    for csv_key in csv_keys:
+        value = []
+        print(csv_key)
+        #/ Detect Encoding /#
+        with open(editPath(csv_dict[csv_key][0]), 'rb') as f:
+            b = f.read()
+            enc = chardet.detect(b)
+        #/ Open CSV File /#
+        with open(editPath(csv_dict[csv_key][0]), encoding=enc['encoding']) as f:
+            reader = csv.reader(f) # Read CSV
+            header = next(reader)
+            for row in reader:
+                value.append(row)
+            csv_dict[csv_key].append(value)
+    print(csv_dict)
+    return 
+
+
 
 ###///   Change GUI Frame Function   ///###
-def changeFrm(frame):
+def changeFrm(frame, a_n):
+    a_n = 0
     frame.tkraise()
     return
 
 
 
 ###///   Update GUI Frame Function   ///###
-def updateFrm(lrn, lng, frame, num):
+def updateFrm(lrn, lng, frame, q_n, a_n):
     frame.destroy()
-    num += -1
+    q_n += -1
     if lrn == "vcb":
-        vcbExam(lng, num)
+        vcbExam(lng, q_n, a_n)
     elif lrn == "grm":
-        grmExam(lng, num)
+        grmExam(lng, q_n, a_n)
     return
 
 
-
 ###///   Vocabulary Learning Function   ///###
-def vcbExam(lng, num):
+def vcbExam(lng, q_n, a_n):
     ##//  Question Frame  //##
     #global vcbex_qst_frm
     vcbex_qst_frm = tk.Frame()
     vcbex_qst_frm.grid(row=0, column=0, sticky="nsew")
     #/ Label /#
-    vcbex_qst_lbl_title = tk.Label(vcbex_qst_frm, text = lng + " Vocabulary Learning " + str(num), font = font_1)
+    vcbex_qst_lbl_title = tk.Label(vcbex_qst_frm, text = lng + " Vocabulary Learning " + str(a_n), font = font_1)
     vcbex_qst_lbl_title.pack(expand = True)
+    #/ Checkbutton /#
+    bln = []
+    c_n = random.randint(0, 3)
+    for i in range(4):
+        b = tk.BooleanVar()
+        bln.append(b)
+        if i == c_n:
+            chk = tk.Checkbutton(vcbex_qst_frm, variable=b, text='正解')
+            chk.place(x=50, y=70 + i * 20)
+        elif i != c_n:
+            chk = tk.Checkbutton(vcbex_qst_frm, variable=b, text='間違い')
+            chk.place(x=50, y=70 + i * 20)
+    if bln[c_n].get == True:
+        a_n += 1
     #/ Button /#
-    vcbex_qst_btn_go2exam = tk.Button(vcbex_qst_frm, text = "Next", command = lambda:updateFrm("vcb", lng, vcbex_qst_frm, num))
+    vcbex_qst_btn_go2exam = tk.Button(vcbex_qst_frm, text = "Next", command = lambda:updateFrm("vcb", lng, vcbex_qst_frm, q_n, a_n))
     vcbex_qst_btn_go2exam.pack()
-    vcbex_qst_btn_back2main = tk.Button(vcbex_qst_frm, text = "Cancel", command = lambda:changeFrm(main_frm))
+    vcbex_qst_btn_back2main = tk.Button(vcbex_qst_frm, text = "Cancel", command = lambda:changeFrm(main_frm, a_n))
     vcbex_qst_btn_back2main.pack()
 
+
     ##//  Score Frame  //##
-    if num == 0:
+    if q_n == 0:
         vcbex_scr_frm = tk.Frame()
         vcbex_scr_frm.grid(row=0, column=0, sticky="nsew")
         #/ Button /#
-        vcbex_scr_btn_back2main = tk.Button(vcbex_scr_frm, text = "Finish", command = lambda:changeFrm(main_frm))
+        vcbex_scr_btn_back2main = tk.Button(vcbex_scr_frm, text = "Finish", command = lambda:changeFrm(main_frm, a_n))
         vcbex_scr_btn_back2main.pack()
 
     return
@@ -121,26 +152,27 @@ def vcbExam(lng, num):
 
 
 ###///   Grammar Learning Function   ///###
-def grmExam(lng, num):
+def grmExam(lng, q_n, a_n):
     ##//  Question Frame  //##
     #global vcbex_qst_frm
     vcbex_qst_frm = tk.Frame()
     vcbex_qst_frm.grid(row=0, column=0, sticky="nsew")
     #/ Label /#
-    vcbex_qst_lbl_title = tk.Label(vcbex_qst_frm, text= lng + " Grammer Learning " + str(num), font = font_1)
+    vcbex_qst_lbl_title = tk.Label(vcbex_qst_frm, text= lng + " Grammer Learning " + str(q_n), font = font_1)
     vcbex_qst_lbl_title.pack(expand = True)
     #/ Button /#
-    vcbex_qst_btn_go2exam = tk.Button(vcbex_qst_frm, text = "Next", command = lambda:updateFrm("grm", lng, vcbex_qst_frm, num))
+    vcbex_qst_btn_go2exam = tk.Button(vcbex_qst_frm, text = "Next", command = lambda:updateFrm("grm", lng, vcbex_qst_frm, q_n, a_n))
     vcbex_qst_btn_go2exam.pack()
-    vcbex_qst_btn_back2main = tk.Button(vcbex_qst_frm, text = "Cancel", command = lambda:changeFrm(main_frm))
+    vcbex_qst_btn_back2main = tk.Button(vcbex_qst_frm, text = "Cancel", command = lambda:changeFrm(main_frm, a_n))
     vcbex_qst_btn_back2main.pack()
+
 
     ##//  Score Frame  //##
     if num == 0:
         vcbex_scr_frm = tk.Frame()
         vcbex_scr_frm.grid(row=0, column=0, sticky="nsew")
         #/ Button /#
-        vcbex_scr_btn_back2main = tk.Button(vcbex_scr_frm, text = "Finish", command = lambda:changeFrm(main_frm))
+        vcbex_scr_btn_back2main = tk.Button(vcbex_scr_frm, text = "Finish", command = lambda:changeFrm(main_frm, a_n))
         vcbex_scr_btn_back2main.pack()
 
     return
@@ -152,9 +184,10 @@ def grmExam(lng, num):
 ###//                   ////###
 if __name__ == "__main__":
     ##///               /##
-    ##//  Check Files  //##
+    ##//  Input Files  //##
     ##/               ///##
     checkFiles()
+    readFiles()
 
 
     ##///          /##
@@ -176,8 +209,8 @@ if __name__ == "__main__":
     win.config(menu=menu_bar)
     #/ File Menu /#
     menu_fle = tk.Menu(menu_bar, tearoff=0)
-    menu_fle.add_command(label = 'Vocabulary', command  =lambda:changeFrm(vcbmn_frm))
-    menu_fle.add_command(label = 'Grammar', command = lambda:changeFrm(grmmn_frm))
+    menu_fle.add_command(label = 'Vocabulary', command  =lambda:changeFrm(vcbmn_frm, a_num))
+    menu_fle.add_command(label = 'Grammar', command = lambda:changeFrm(grmmn_frm, a_num))
     menu_fle.add_command(label = 'Exit', command = quit)
     menu_bar.add_cascade(label = 'Learn', menu = menu_fle)
     #/ About Menu /#
@@ -201,9 +234,9 @@ if __name__ == "__main__":
     canvas.pack()
     canvas.create_image((800 - (main_img_w * (500/main_img_h)))/2, 0, image=main_img_lg, anchor=tk.NW)
     #/ Button /#
-    main_btn_go2vocab = tk.Button(main_frm, text = "Vocabulary Learning", command = lambda:changeFrm(vcbmn_frm))
+    main_btn_go2vocab = tk.Button(main_frm, text = "Vocabulary Learning", command = lambda:changeFrm(vcbmn_frm, a_num))
     main_btn_go2vocab.pack()
-    main_btn_go2gram = tk.Button(main_frm, text = "Grammar Learning", command = lambda:changeFrm(grmmn_frm))
+    main_btn_go2gram = tk.Button(main_frm, text = "Grammar Learning", command = lambda:changeFrm(grmmn_frm, a_num))
     main_btn_go2gram.pack()
 
 
@@ -213,11 +246,11 @@ if __name__ == "__main__":
     vcbmn_frm = tk.Frame()
     vcbmn_frm.grid(row=0, column=0, sticky="nsew")
     #/ Button /#
-    vcbmn_btn_jp = tk.Button(vcbmn_frm, text = "Japanese", command = lambda:changeFrm(vcbjp_frm))
+    vcbmn_btn_jp = tk.Button(vcbmn_frm, text = "Japanese", command = lambda:changeFrm(vcbjp_frm, a_num))
     vcbmn_btn_jp.pack()
-    vcbmn_btn_en = tk.Button(vcbmn_frm, text = "English", command = lambda:changeFrm(vcben_frm))
+    vcbmn_btn_en = tk.Button(vcbmn_frm, text = "English", command = lambda:changeFrm(vcben_frm, a_num))
     vcbmn_btn_en.pack()
-    vcbmn_btn_back2main = tk.Button(vcbmn_frm, text = "Home", command = lambda:changeFrm(main_frm))
+    vcbmn_btn_back2main = tk.Button(vcbmn_frm, text = "Home", command = lambda:changeFrm(main_frm, a_num))
     vcbmn_btn_back2main.pack()
 
 
@@ -225,9 +258,9 @@ if __name__ == "__main__":
     vcbjp_frm = tk.Frame()
     vcbjp_frm.grid(row=0, column=0, sticky="nsew")
     #/ Button /#
-    vcbjp_btn_back2exam = tk.Button(vcbjp_frm, text = "Start", command = lambda:vcbExam("jp", q_num))
+    vcbjp_btn_back2exam = tk.Button(vcbjp_frm, text = "Start", command = lambda:vcbExam("jp", q_num, a_num))
     vcbjp_btn_back2exam.pack()
-    vcbjp_btn_back2main = tk.Button(vcbjp_frm, text = "Home", command = lambda:changeFrm(main_frm))
+    vcbjp_btn_back2main = tk.Button(vcbjp_frm, text = "Home", command = lambda:changeFrm(main_frm, a_num))
     vcbjp_btn_back2main.pack()
     
 
@@ -235,9 +268,9 @@ if __name__ == "__main__":
     vcben_frm = tk.Frame()
     vcben_frm.grid(row=0, column=0, sticky="nsew")
     #/ Button /#
-    vcben_btn_back2exam = tk.Button(vcben_frm, text = "Start", command = lambda:vcbExam("en", q_num))
+    vcben_btn_back2exam = tk.Button(vcben_frm, text = "Start", command = lambda:vcbExam("en", q_num, a_num))
     vcben_btn_back2exam.pack()
-    vcben_btn_back2main = tk.Button(vcben_frm, text = "Home", command = lambda:changeFrm(main_frm))
+    vcben_btn_back2main = tk.Button(vcben_frm, text = "Home", command = lambda:changeFrm(main_frm, a_num))
     vcben_btn_back2main.pack()
 
 
@@ -247,11 +280,11 @@ if __name__ == "__main__":
     grmmn_frm = tk.Frame()
     grmmn_frm.grid(row=0, column=0, sticky="nsew")
     #/ Button /#
-    grmmn_btn_jp = tk.Button(grmmn_frm, text = "Japanese", command = lambda:changeFrm(grmjp_frm))
+    grmmn_btn_jp = tk.Button(grmmn_frm, text = "Japanese", command = lambda:changeFrm(grmjp_frm, a_num))
     grmmn_btn_jp.pack()
-    grmmn_btn_en = tk.Button(grmmn_frm, text = "English", command = lambda:changeFrm(grmen_frm))
+    grmmn_btn_en = tk.Button(grmmn_frm, text = "English", command = lambda:changeFrm(grmen_frm, a_num))
     grmmn_btn_en.pack()
-    grmmn_btn_back2main = tk.Button(grmmn_frm, text = "Home", command = lambda:changeFrm(main_frm))
+    grmmn_btn_back2main = tk.Button(grmmn_frm, text = "Home", command = lambda:changeFrm(main_frm, a_num))
     grmmn_btn_back2main.pack()
 
 
@@ -259,9 +292,9 @@ if __name__ == "__main__":
     grmjp_frm = tk.Frame()
     grmjp_frm.grid(row=0, column=0, sticky="nsew")
     #/ Button /#
-    grmjp_btn_back2exam = tk.Button(grmjp_frm, text = "Start", command = lambda:grmExam("jp", q_num))
+    grmjp_btn_back2exam = tk.Button(grmjp_frm, text = "Start", command = lambda:grmExam("jp", q_num, a_num))
     grmjp_btn_back2exam.pack()
-    grmjp_btn_back2main = tk.Button(grmjp_frm, text = "Home", command = lambda:changeFrm(main_frm))
+    grmjp_btn_back2main = tk.Button(grmjp_frm, text = "Home", command = lambda:changeFrm(main_frm, a_num))
     grmjp_btn_back2main.pack()
 
 
@@ -269,9 +302,9 @@ if __name__ == "__main__":
     grmen_frm = tk.Frame()
     grmen_frm.grid(row=0, column=0, sticky="nsew")
     #/ Button /#
-    grmen_btn_back2exam = tk.Button(grmen_frm, text = "Start", command = lambda:grmExam("en", q_num))
+    grmen_btn_back2exam = tk.Button(grmen_frm, text = "Start", command = lambda:grmExam("en", q_num, a_num))
     grmen_btn_back2exam.pack()
-    grmen_btn_back2main = tk.Button(grmen_frm, text = "Home", command = lambda:changeFrm(main_frm))
+    grmen_btn_back2main = tk.Button(grmen_frm, text = "Home", command = lambda:changeFrm(main_frm, a_num))
     grmen_btn_back2main.pack()
 
 
